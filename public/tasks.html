@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=" UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content=" IE=edge" />
+        <meta name="viewport" content=" widdiv=device-widdiv, initial-scale=1.0" />
+        <title t=" tasks_title">Tasks</title>
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <script src="/io/socket.io.min.js"></script>
+        <script src="/js/lib/moment.js"></script>
+        <script src="/js/helpers.js"></script>
+        <script src="/js/io.js"></script>
+    </head>
+    <body>
+        <menu>
+            <a href="/" t=" tracker"></a>
+            <a href="/tasks.html" t=" tasks"></a>
+            <a href="/history.html" t=" history"></a>
+        </menu>
+
+        <div id="new-task">
+            <div>
+                <span class="task-column" t=" create task"></span>
+                <button class="task-create">+</button>
+            </div>
+
+            <div>
+                <span class="task-column" t=" external_id"></span>
+                <input class="task-id" />
+            </div>
+
+            <div>
+                <span class="task-column" t=" name"></span>
+                <input class="task-name" />
+            </div>
+
+            <div class="error task-column"></div>
+        </div>
+
+        <div id="search-tasks">
+            <div>
+                <span class="task-column" t=" search"></span>
+                <input class="task-search" />
+                <button class="task-search-action">GO</button>
+                <button class="task-search-clear">X</button>
+            </div>
+        </div>
+
+        <!-- <div id="pagination">
+            <span>
+                <span t=" page_total"></span>
+                <span name="total"></span>
+            </span>
+            <span>
+                <span t=" page_current"></span>
+                <span name="current"></span>
+            </span>
+            <button t=" page_first" name="first"></button>
+            <button t=" page_prev" name="prev"></button>
+            <button t=" page_next" name="next"></button>
+            <button t=" page_last" name="last"></button>
+        </div> -->
+
+        <div id="tasks">
+            <span class="tasks-group" data-status="0">
+                <div class="tasks-title" t=" inpause"></div>
+                <div class="tasks">
+                    <!-- <div class="task">
+                        <div name="id">
+                            <span class="column" t=" id_dt"></span>
+                            <span class="value">XXXXX</span>
+                        </div>
+                        <div name="name">
+                            <span class="column" t=" name_dt"></span>
+                            <span class="value">XXXXX</span>
+                        </div>
+                        <div name="created_at">
+                            <span class="column" t=" created_dt"></span>
+                            <span class="value">XXXXX</span>
+                        </div>
+                        <div name="updated_at">
+                            <span class="column" t=" updated_dt"></span>
+                            <span class="value">XXXXX</span>
+                        </div>
+                        <div name="wasted_total_mins">
+                            <span class="column" t=" wasted_dt"></span>
+                            <span class="value">XXXXX</span>
+                        </div>
+                    </div> -->
+                </div>
+            </span>
+            <span class="tasks-group" data-status="1">
+                <div class="tasks-title" t=" inwork"></div>
+                <div class="tasks"></div>
+            </span>
+            <span class="tasks-group" data-status="2">
+                <div class="tasks-title" t=" complete"></div>
+                <div class="tasks"></div>
+            </span>
+        </div>
+
+        <script src="/js/init.js"></script>
+        <script src="/js/pages/tasks.js"></script>
+    </body>
+</html>

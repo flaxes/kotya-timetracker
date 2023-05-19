@@ -1,0 +1,159 @@
+body {
+    background-color: grey;
+}
+
+div {
+    background-color: #fff;
+}
+
+menu {
+    width: auto;
+    height: 10%;
+    display: flex;
+}
+
+menu a {
+    text-decoration: none;
+    background-color: #8200fc;
+    border-radius: 10px;
+    margin-right: 10px;
+    padding: 8px;
+    color: #fff;
+}
+
+menu a:hover {
+    background-color: #8200aa;
+}
+
+#week-tracker {
+    width: 100%;
+    display: flex;
+    padding-top: 10px;
+    overflow-x: scroll;
+}
+#week-tracker .week-day {
+    border: 1px solid #000;
+    width: 100%;
+}
+
+.week-day-title {
+    padding: 4px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.week-day-date {
+    white-space: nowrap;
+}
+
+#pagination {
+    padding-top: 20px;
+}
+
+#new-task {
+    outline: #000 solid 1px;
+    max-width: 300px;
+    min-height: 20%;
+}
+
+#new-task div {
+    padding-top: 4px;
+}
+
+#search-tasks {
+    outline: #000 solid 1px;
+    padding-bottom: 10px;
+    padding-top: 6px;
+    max-width: 300px;
+    min-height: 20%;
+}
+
+.task-search {
+    max-width: 40%;
+}
+
+.task-time-start {
+    padding-top: 6px;
+    display: flex;
+}
+
+.summary-time {
+    white-space: nowrap;
+    padding-left: 8px;
+}
+.summary-num {
+    font-size: large;
+}
+
+.task-summary {
+    padding-top: 4px;
+}
+.task-summary span {
+    padding-right: 4px;
+}
+
+.task-column {
+    display: inline-block;
+    min-width: 30px;
+    text-align: end;
+    padding-left: 1vw;
+}
+
+#tasks {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.tasks-group {
+    min-width: 20%;
+}
+
+.tasks-title {
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+.tasks-group {
+    outline: #000 solid 2px;
+}
+
+.task {
+    border: 2px dotted #555555;
+    padding: 10px;
+    margin-top: 4px;
+}
+
+.task-id-column {
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-actions {
+    margin-top: 6px;
+    display: flex;
+    justify-content: center;
+}
+
+.task-action {
+    width: 100%;
+}
+
+.task-id {
+    width: 100px;
+}
+
+.task-name {
+    width: 200px;
+}
+
+.error {
+    color: #f00000;
+}
+
+@media screen and (max-width: 1000px) {
+    .task-counter {
+        display: none;
+    }
+}

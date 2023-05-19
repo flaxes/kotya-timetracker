@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=" UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content=" IE=edge" />
+        <meta name="viewport" content=" widdiv=device-widdiv, initial-scale=1.0" />
+        <title t=" history_title">History</title>
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <script src="/io/socket.io.min.js"></script>
+        <script src="/js/helpers.js"></script>
+        <script src="/js/io.js"></script>
+    </head>
+    <body>
+        <menu>
+            <a href="/" t=" tracker"></a>
+            <a href="/tasks.html" t=" tasks"></a>
+            <a href="/history.html" t=" history"></a>
+        </menu>
+
+        <!-- <div id="pagination">
+            <span>
+                <span t=" page_total"></span>
+                <span name="total"></span>
+            </span>
+            <span>
+                <span t=" page_current"></span>
+                <span name="current"></span>
+            </span>
+            <button t=" page_first" name="first"></button>
+            <button t=" page_prev" name="prev"></button>
+            <button t=" page_next" name="next"></button>
+            <button t=" page_last" name="last"></button>
+        </div> -->
+
+        <div id="history"></div>
+
+        <script src="/js/init.js"></script>
+        <script src="/js/pages/history.js"></script>
+    </body>
+</html>

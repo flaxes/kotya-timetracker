@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=" UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content=" IE=edge" />
+        <meta name="viewport" content=" widdiv=device-widdiv, initial-scale=1.0" />
+        <title t=" tracker_title">Calendar</title>
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <script src="/io/socket.io.min.js"></script>
+        <script src="/js/lib/moment.js"></script>
+        <script src="/js/helpers.js"></script>
+        <script src="/js/io.js"></script>
+    </head>
+    <body>
+        <menu>
+            <a href="/" t=" tracker"></a>
+            <a href="/tasks.html" t=" tasks"></a>
+            <a href="/history.html" t=" history"></a>
+        </menu>
+
+        <div id="pagination">
+            <button t=" page_prev" class="search-prev"></button>
+            <button t=" page_next" class="search-next"></button>
+
+            <input type="week" name="week" id="search-week" required />
+            <!-- <button class="tracker-search-action">GO</button> -->
+        </div>
+
+        <div id="week-tracker">
+            <!-- <div class="week-day" data-index="0">
+                <div class="week-day-title">
+                    <span class="week-day-name" t=" monday"></span>
+                    <span class="week-day-date">20-02-2012</span>
+                </div>
+                <div class="task" data-id="1">
+                    <div class="task-title">#1 Какое-то название</div>
+
+                    <div class="task-time-starts">
+                        <div>15:00-15:30 30m</div>
+                        <div>15:40-16:00 20m</div>
+                    </div>
+                    <div class="task-time-total">
+                        <span>Затрачено</span>
+                        <span>2h20m</span>
+                    </div>
+                </div>
+
+                <div class="tasks-summary">
+                    <span class="tasks-summary-title" t=" wasted total_dt"></span>
+                    <span class="tasks-summary-value">8h20m</span>
+                </div>
+            </div> -->
+
+        </div>
+
+        <script src="/js/init.js"></script>
+        <script src="/js/pages/tracker.js"></script>
+    </body>
+</html>
