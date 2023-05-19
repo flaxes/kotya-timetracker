@@ -58,14 +58,14 @@ module.exports = {
     deleted: "deleted",
     force_end: "auto finished",
 
-    pause: "пауза",
-    inpause: "в паузе",
-    inwork: "в работе",
-    complete: "выполнено",
+    pause: "pause",
+    inpause: "on pause",
+    inwork: "in work",
+    complete: "done",
 
-    wasted: "затрачено",
-    wasted_dt: "затрачено:",
+    wasted: "spent",
+    wasted_dt: "spent:",
     wasted_per_start_dt: ":",
-    wasted_per_task_dt: "затрачено за таск:",
-    wasted_per_day_dt: "затрачено за день:",
+    wasted_per_task_dt: "spent for task:",
+    wasted_per_day_dt: "spent for day:",
 };

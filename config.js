@@ -2,5 +2,5 @@
 
 module.exports = {
     port: 53453,
-    lang: "ru",
+    lang: "en",
 };
