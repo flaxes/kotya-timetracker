@@ -3,3 +3,4 @@ package-lock.json
 app.db
 _temp
 update.zip
+config.js
