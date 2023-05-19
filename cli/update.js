@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 
-const IGNORE = [".git", "app.db", "package-lock.json", "node_modules", "UPDATE.bat", "_temp"];
+const IGNORE = [".git", "app.db", 'config.js', "package-lock.json", "node_modules", "UPDATE.bat", "_temp"];
 const UPDATED_DIR = "./_temp/kotya-timetracker-master";
 
 for (const file of fs.readdirSync("./")) {
