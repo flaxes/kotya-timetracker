@@ -8,7 +8,7 @@ For ALL:
 
 1. Create a copy of `config_example.js` and name it `config.js`.  
    You can change backendport or language (en/ru) there.
-2. Create a copy of `db_example.db` and name it `db.db`  
+2. Create a copy of `app_example.db` and name it `app.db`  
    All information is stored in SQLite3 database
 
 ---
