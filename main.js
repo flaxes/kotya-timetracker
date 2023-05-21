@@ -1,8 +1,10 @@
+// @ts-check
+
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, dialog } = require("electron");
 const path = require("path");
 
-require("./backend");
+const bootstrap = require("./bootstrap");
 const { port } = require("./config");
 
 function createWindow() {
@@ -22,13 +24,33 @@ function createWindow() {
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
+
+    return mainWindow;
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow();
+    const mainWindow = createWindow();
+    bootstrap()
+        .then(() => {})
+        .catch((err) => {
+            console.error(err);
+            if (err.message.includes("EADDRINUSE")) {
+                err.message = `Program already opened.\nIf not - maybe port:${port} is used by another program.\nYou can change port in config.js`;
+            }
+
+            dialog.showMessageBoxSync({
+                title: "Run error",
+                type: "error",
+                message: err.message,
+            });
+
+            mainWindow.close();
+
+            // process.exit(1);
+        });
 
     app.on("activate", function () {
         // On macOS it's common to re-create a window in the app when the
