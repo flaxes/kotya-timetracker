@@ -41,6 +41,10 @@ class Tasks {
         return res;
     }
 
+    update(obj) {
+        return Db.update(obj, "tasks");
+    }
+
     /**
      *
      * @param {string} name
@@ -48,7 +52,7 @@ class Tasks {
      * @returns {Promise<import("../types/db").TaskRow | { error: string }>}
      */
     async add(name, external_id) {
-        const [oldRow] = await Db.get("SELECT * FROM tasks WHERE external_id = ?", [external_id]);
+        const [oldRow] = await Db.get("SELECT * FROM tasks WHERE external_id = ? AND is_hidden IS null", [external_id]);
 
         if (oldRow) {
             return { error: "duplicate_external_id" };
@@ -74,7 +78,7 @@ class Tasks {
     async hide(id, isHidden = true) {
         const sql = "UPDATE tasks SET is_hidden = ? WHERE id = ?";
 
-        await history.add('deleted', id);
+        await history.add("deleted", id);
 
         return Db.run(sql, [isHidden, id]);
     }

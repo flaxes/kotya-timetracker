@@ -5,6 +5,7 @@ export interface TaskRow {
     status: 0 | 1 | 2;
     created_at: string;
     updated_at: string;
+    is_hidden?: 1;
     wasted_total_mins?: number;
 }
 

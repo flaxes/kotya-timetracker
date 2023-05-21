@@ -23,6 +23,29 @@ class Db {
         return this.#db.run(sql, values);
     }
 
+    async update(obj, table) {
+        const entries = Object.entries(obj);
+
+        const columns = [];
+        const values = [];
+
+        const { id } = obj;
+        delete obj.id;
+
+        entries.forEach(([key, value]) => {
+            columns.push(`${key} = ?`);
+            values.push(value);
+        });
+
+        values.push(id);
+
+        const sql = `UPDATE ${table} SET ${columns.join(", ")}\nWHERE id = ?`;
+
+        const res = await this.#db.run(sql, values);
+
+        return res;
+    }
+
     /**
      *
      * @param {object} obj

@@ -49,10 +49,18 @@ apiRouter.post("/tasks/delete", async (req, res) => {
     res.json(response);
 });
 
-apiRouter.post("/tasks/update", async (req, res) => {
+apiRouter.post("/tasks/status", async (req, res) => {
     const { body } = req;
 
     const response = await tasks.changeStatus(body.id, body.status);
+
+    res.json(response);
+});
+
+apiRouter.post("/tasks/update", async (req, res) => {
+    const { body } = req;
+
+    const response = await tasks.update(body);
 
     res.json(response);
 });

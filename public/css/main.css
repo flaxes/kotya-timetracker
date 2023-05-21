@@ -144,6 +144,11 @@ menu a:hover {
     width: 200px;
 }
 
+.value-max {
+    width: 100%;
+    resize: none;
+}
+
 .error {
     color: #f00000;
 }

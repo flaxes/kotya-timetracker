@@ -19,7 +19,7 @@ const tasksGroups = {
 };
 
 async function updateTaskStatus(id, status) {
-    const res = await request("/tasks/update", "POST", { id, status });
+    const res = await request("/tasks/status", "POST", { id, status });
 
     return res;
 }
@@ -29,10 +29,34 @@ async function updateTaskStatus(id, status) {
  * @param {import("../../../types/db").TaskRow} task
  */
 function renderTask(task) {
+    const updateNameButton = (id, valueEl) => {
+        const btn = createElementWithText("button", "s", "value-save");
+        btn.onclick = () => {
+            const isConfirmed = confirm(L("are_you_sure", "C", 1));
+
+            if (!isConfirmed) return;
+
+            request("/tasks/update", "POST", { id, name: valueEl.value }).catch(err => {
+                console.error(err);
+
+                alert(err.message);
+            })
+        };
+
+        return btn;
+    };
+
     const table = [
         { name: "id", trans: "id_dt" },
         { name: "external_id", trans: "external_id" },
-        { name: "name", trans: "name_dt" },
+        {
+            name: "name",
+            trans: "name_dt",
+            type: "textarea",
+            value: "value",
+            valueClass: "value-max",
+            button: updateNameButton,
+        },
         {
             name: "created_at",
             trans: "created_dt",
@@ -127,11 +151,17 @@ function renderTask(task) {
 
         if (type.format) val = type.format(val);
 
-        const valDom = document.createElement("span");
-        valDom.className = "value";
-        valDom.innerText = val;
+        const valDom = document.createElement(type.type || "span");
+        console.log(valDom);
+        valDom.className = type.valueClass || "value";
+
+        valDom[type.value || "innerText"] = val;
 
         group.append(columnDom, valDom);
+
+        if (type.button) {
+            columnDom.append(type.button(task.id, valDom));
+        }
         if (inner) {
             const upperGroup = document.createElement("div");
             upperGroup.append(group);
