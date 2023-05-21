@@ -11,31 +11,37 @@ const logger = createLogger("Tracker");
 class Tracker {
     async stopNotFinished() {
         const m = moment().set({ h: 0, m: 0, s: 0 });
-        const zeroTime = m.format(DATE_TIME_FORMAT);
-        const date = m.format(DATE_FORMAT);
+        const todayDate = m.format(DATE_FORMAT);
 
         const getSql = "SELECT * FROM task_trackers WHERE ended_at IS null AND DATE(started_at) != ?";
-        const tasks = await Db.get(getSql, [date]);
+
+        /** @type {import("../types/db").TaskTrackRow[]} */
+        const tasks = await Db.get(getSql, [todayDate]);
 
         if (!tasks.length) return;
 
-        const sql = "UPDATE task_trackers SET ended_at = ? WHERE id IN (?)";
+        const sql = "UPDATE task_trackers SET ended_at = ?, wasted_mins = ? WHERE id = ?";
 
-        const endTasksIds = [];
-        const endIds = tasks.map((item) => {
-            endTasksIds.push(item.task_id);
-            return item.id;
+        const endTasksIds = new Set();
+        const finishPromises = tasks.map((item) => {
+            const to = moment(item.started_at).set({ h: 0, m: 0, s: 0 }).add(1, "day");
+            const zeroTime = to.format(DATE_TIME_FORMAT);
+            const wastedMins = this.calculateWastedMins(moment(item.started_at), to);
+
+            endTasksIds.add(item.task_id);
+            return Db.run(sql, [zeroTime, wastedMins, item.id]);
         });
-        const res = await Db.run(sql, [zeroTime, endIds.join(",")]);
 
-        await Promise.all(tasks.map((task) => history.add("force_end", task.task_id)));
+        await Promise.all(finishPromises);
 
         const sqlTasks = "UPDATE tasks SET status = 0 WHERE id IN (?) AND status = 1";
 
-        await Db.run(sqlTasks, [endTasksIds.join(",")]);
-        logger.warn(`${res.changes} tasks forced finished`);
+        const toFinish = Array.from(endTasksIds);
+        await Db.run(sqlTasks, [toFinish.join(",")]);
 
-        return res;
+        await Promise.all(toFinish.map((taskId) => history.add("force_end", taskId)));
+
+        logger.warn(`${endTasksIds.size} tasks forced finished`);
     }
     /**
      *
@@ -61,7 +67,7 @@ class Tracker {
 
         const sql = `SELECT ${sels.join(",")} FROM task_trackers tt
         INNER JOIN tasks t ON t.id = tt.task_id
-        WHERE tt.started_at >= ? AND tt.started_at <= ? ORDER BY tt.id ASC`;
+        WHERE tt.started_at >= ? AND tt.started_at <= ? ORDER BY tt.started_at ASC`;
 
         const res = await Db.get(sql, [dateFrom, dateTo]);
 
@@ -73,8 +79,8 @@ class Tracker {
      * @param {number} taskId
      * @returns {Promise<import("../types/db").TaskTrackRow | undefined>}
      */
-    async getByTaskId(taskId) {
-        const sql = "SELECT * FROM task_trackers WHERE task_id = ? ORDER BY id DESC";
+    async getInworkByTaskId(taskId) {
+        const sql = "SELECT * FROM task_trackers WHERE task_id = ? AND ended_at IS null ORDER BY id DESC LIMIT 1";
 
         const res = await Db.get(sql, [taskId]);
 
@@ -83,32 +89,51 @@ class Tracker {
 
     /**
      *
+     * @param {Partial<import("../types/db").TaskTrackRow>} track
+     * @param {boolean} [skipHistory]
+     */
+    async create(track, skipHistory) {
+        if (!track.task_id) throw new Error("TaskID is required");
+
+        if (!track.wasted_mins && track.ended_at && track.started_at) {
+            track.wasted_mins = this.calculateWastedMins(moment(track.started_at), moment(track.ended_at));
+        }
+
+        const res = await Db.insertOne(track, "task_trackers");
+
+        if (!skipHistory) await history.add("track_created", track.task_id);
+
+        return res;
+    }
+
+    /**
+     *
      * @param {number} taskId
      */
     async start(taskId) {
         /** @type {Partial<import("../types/db").TaskTrackRow>} */
-        const obj = {
+        const track = {
             task_id: taskId,
             started_at: moment().format(DATE_TIME_FORMAT),
             wasted_mins: 0,
         };
 
-        const res = await Db.insertOne(obj, "task_trackers");
+        const res = await this.create(track, true);
 
         return res;
     }
 
     async end(taskId) {
-        const row = await this.getByTaskId(taskId);
+        const row = await this.getInworkByTaskId(taskId);
 
         if (!row || row.ended_at) return;
 
         const endedAt = moment();
 
         row.ended_at = endedAt.format(DATE_TIME_FORMAT);
-        row.wasted_mins = moment(row.started_at).diff(endedAt, "minutes");
+        row.wasted_mins = this.calculateWastedMins(moment(row.started_at), endedAt);
 
-        if (row.wasted_mins) {
+        if (row.wasted_mins < 1) {
             // Delete useless tasks
             await Db.run("DELETE FROM task_trackers WHERE id = ?", [row.id]);
 
@@ -118,26 +143,40 @@ class Tracker {
         const sql = "UPDATE task_trackers SET ended_at = ?, wasted_mins = ? WHERE id = ?";
         await Db.run(sql, [row.ended_at, row.wasted_mins, row.id]);
 
-        await history.add("ended", taskId);
-
         return row;
     }
 
-    async update(trackId, from, to) {
-        const sql = "UPDATE task_trackers SET wasted_mins = ?, started_at = ?, ended_at = ? WHERE id = ?";
+    async update(taskId, trackId, from, to) {
+        const sql =
+            "UPDATE task_trackers SET wasted_mins = ?, started_at = ?, ended_at = ? WHERE id = ? AND task_id = ?";
         const diff = moment(to).diff(moment(from), "minutes");
 
-        const args = [diff, from, to, trackId];
+        const args = [diff, from, to, trackId, taskId];
 
         const res = await Db.run(sql, args);
 
-        return { diff } ;
+        await history.add("track_updated", taskId);
+
+        return { diff };
     }
 
-    delete(trackId) {
-        const sql = "DELETE FROM task_trackers WHERE id = ?";
+    async delete(taskId, trackId) {
+        const sql = "DELETE FROM task_trackers WHERE id = ? AND task_id = ?";
 
-        return Db.run(sql, [trackId]);
+        const res = await Db.run(sql, [trackId, taskId]);
+
+        await history.add("track_deleted", taskId);
+
+        return res;
+    }
+
+    /**
+     *
+     * @param {moment.Moment} from
+     * @param {moment.Moment} to
+     */
+    calculateWastedMins(from, to) {
+        return to.diff(from, "minutes");
     }
 }
 

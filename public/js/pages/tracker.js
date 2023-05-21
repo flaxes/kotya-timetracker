@@ -57,7 +57,7 @@ class TotalCounter {
     }
 
     change(key, num) {
-        this.data[key] = num;
+        this.data[key] = num || 0;
 
         this.update();
     }
@@ -65,46 +65,42 @@ class TotalCounter {
 
 /**
  *
- * @param {object} nums
+ * @param {Partial<import("../../../types/db").TaskTrackRow>} num
  * @param {TotalCounter} taskCounter
- * @returns
+ * @param {number} counter
  */
-function renderNums(nums, taskCounter) {
-    const taskStarts = createElementWithText("div", "", "task-time-starts");
+function renderNum(num, taskCounter, counter) {
+    const numDom = createElementWithText("div", "", "task-time-start");
 
-    let counter = 0;
+    numDom.append(createElementWithText("span", `${counter}.`, "task-counter"));
 
-    for (const num of nums) {
-        if (!num.ended_at || !num.wasted_mins) continue;
+    const fromInput = createDateInput(num.started_at);
+    numDom.append(fromInput);
 
-        const numDom = createElementWithText("div", "", "task-time-start");
+    numDom.append(createElementWithText("span", "-"));
 
-        numDom.append(createElementWithText("span", `${++counter}.`, "task-counter"));
+    const toInput = createDateInput(num.ended_at);
+    numDom.append(toInput);
 
-        const fromInput = createDateInput(num.started_at);
-        numDom.append(fromInput);
+    const saveButton = createElementWithText("button", "s", "task-time-save");
+    const deleteButton = createElementWithText("button", "x", "task-time-delete");
+    const { dom: numTotalDom, total: numTotal } = renderSummary("wasted_per_start_dt", taskCounter);
 
-        numDom.append(createElementWithText("span", "-"));
+    saveButton.onclick = async () => {
+        // Disallow to save without times
+        if (!fromInput.value || !toInput.value) return;
 
-        const toInput = createDateInput(num.ended_at);
-        numDom.append(toInput);
+        if (moment(fromInput.value, TIME_FORMAT).isAfter(moment(toInput.value, TIME_FORMAT))) {
+            return;
+        }
 
-        const saveButton = createElementWithText("button", "s", "task-time-save");
-        const deleteButton = createElementWithText("button", "x", "task-time-delete");
-        const { dom: numTotalDom, total: numTotal } = renderSummary("wasted_per_start_dt", taskCounter);
+        const date = (num.started_at || new Date().toISOString()).slice(0, 10);
 
-        saveButton.onclick = async () => {
-            // Disallow to save without times
-            if (!fromInput.value || !toInput.value) return;
-
-            if (moment(fromInput.value, TIME_FORMAT).isAfter(moment(toInput.value, TIME_FORMAT))) {
-                return;
-            }
-
-            const date = num.started_at.slice(0, 10);
-
+        // Update case
+        if (num.id) {
             const body = {
                 from: `${date} ${fromInput.value}:00`,
+                taskId: num.task_id,
                 trackId: num.id,
             };
 
@@ -119,35 +115,102 @@ function renderNums(nums, taskCounter) {
 
                     alert(err.message);
                 });
+
+            return;
+        }
+
+        // Create case
+        const body = {
+            taskId: num.task_id,
+            from: `${date} ${fromInput.value}:00`,
         };
 
-        deleteButton.onclick = async () => {
-            const isConfirmed = confirm(L("are_you_sure", "C", 1));
+        if (toInput.value) body.to = `${date} ${toInput.value}:00`;
 
-            if (!isConfirmed) return;
+        await request("/tracker/create", "POST", body)
+            .then((res) => {
+                num.id = res.id;
+                numTotal.change(num.id, res.wasted_mins);
+            })
+            .catch((err) => {
+                console.error(err);
 
-            await request("/tracker/delete", "POST", { id: num.id })
-                .then(() => {
-                    deleteButton.parentElement.remove();
-                    numTotal.change(num.id, 0);
-                })
+                alert(err.message);
+            });
+    };
+
+    deleteButton.onclick = async () => {
+        const isConfirmed = confirm(L("are_you_sure", "C", 1));
+
+        if (!isConfirmed) return;
+
+        if (num.id) {
+            await request("/tracker/delete", "POST", { trackId: num.id, taskId: num.task_id })
+                .then(() => {})
                 .catch((err) => {
                     console.error(err);
 
                     alert(err.message);
                 });
-        };
+        }
 
-        numDom.append(saveButton);
-        numDom.append(deleteButton);
+        deleteButton.parentElement.remove();
+        numTotal.change(num.id, 0);
+    };
 
-        numDom.append(numTotalDom);
-        numTotal.change(num.id, num.wasted_mins);
+    numDom.append(saveButton);
+    numDom.append(deleteButton);
+
+    numDom.append(numTotalDom);
+    numTotal.change(num.id, num.wasted_mins);
+
+    return numDom;
+}
+
+/**
+ *
+ * @param {object} nums
+ * @param {TotalCounter} taskCounter
+ * @returns
+ */
+function renderNums(nums, taskCounter) {
+    const taskStarts = createElementWithText("div", "", "task-time-starts");
+
+    taskStarts.dataset.counter = 0;
+
+    for (const num of nums) {
+        if (!num.ended_at || !num.wasted_mins) continue;
+
+        const count = (Number(taskStarts.dataset.counter) || 0) + 1;
+
+        taskStarts.dataset.counter = count;
+        const numDom = renderNum(num, taskCounter, count);
 
         taskStarts.append(numDom);
     }
 
     return taskStarts;
+}
+
+/**
+ *
+ * @param {number} taskId
+ * @param {TotalCounter} taskCounter
+ * @param {HTMLElement} taskStartsDom
+ * @returns
+ */
+function renderAddNumBtn(taskId, taskCounter, taskStartsDom) {
+    const btn = createElementWithText("button", "+", "task-time-starts-add");
+
+    btn.onclick = () => {
+        const count = (Number(taskStartsDom.dataset.counter) || 0) + 1;
+
+        taskStartsDom.dataset.counter = count + "";
+        const createNum = renderNum({ task_id: taskId }, taskCounter, count);
+
+        taskStartsDom.append(createNum);
+    };
+    return btn;
 }
 
 /**
@@ -208,6 +271,7 @@ function renderDay(date, tracks) {
         taskDom.append(taskStarts);
 
         taskDom.append(dayDom);
+        taskDom.append(renderAddNumBtn(Number(id), dayTotal, taskStarts));
     }
 
     weekDayDom.append(dom);

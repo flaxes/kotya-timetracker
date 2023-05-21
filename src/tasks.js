@@ -71,8 +71,10 @@ class Tasks {
         return res;
     }
 
-    hide(id, isHidden = true) {
+    async hide(id, isHidden = true) {
         const sql = "UPDATE tasks SET is_hidden = ? WHERE id = ?";
+
+        await history.add('deleted', id);
 
         return Db.run(sql, [isHidden, id]);
     }

@@ -78,12 +78,8 @@ menu a:hover {
     display: flex;
 }
 
-.summary-time {
-    white-space: nowrap;
-    padding-left: 8px;
-}
 .summary-num {
-    font-size: large;
+    white-space: nowrap;
 }
 
 .task-summary {

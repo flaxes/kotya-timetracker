@@ -47,12 +47,16 @@ module.exports = {
 
     history: "история",
     tracker: "календарь",
+    track_created: "Трэк создан",
+    track_updated: "Трэк обновлён",
+    track_deleted: "Трэк удалён",
 
     name: "имя",
     name_dt: "имя:",
     status: "статус",
     status_dt: "статус:",
     begin: "начать",
+    started: 'начат',
     end: "закончить",
     ended: "закончен",
     deleted: "удалён",

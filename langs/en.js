@@ -47,12 +47,16 @@ module.exports = {
 
     history: "history",
     tracker: "calendar",
+    track_created: "Track created",
+    track_updated: "Track updated",
+    track_deleted: "Track deleted",
 
     name: "name",
     name_dt: "name:",
     status: "status",
     status_dt: "status:",
     begin: "Start",
+    started: "started",
     end: "finish",
     ended: "finished",
     deleted: "deleted",

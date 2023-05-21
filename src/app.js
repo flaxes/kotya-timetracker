@@ -57,10 +57,24 @@ apiRouter.post("/tasks/update", async (req, res) => {
     res.json(response);
 });
 
+apiRouter.post("/tracker/create", async (req, res) => {
+    const { body } = req;
+
+    const track = {
+        task_id: body.taskId,
+        started_at: body.from,
+        ended_at: body.to,
+    };
+
+    const response = await tracker.create(track);
+
+    res.json(response);
+});
+
 apiRouter.post("/tracker/update", async (req, res) => {
     const { body } = req;
 
-    const response = await tracker.update(body.trackId, body.from, body.to);
+    const response = await tracker.update(body.taskId, body.trackId, body.from, body.to);
 
     res.json(response);
 });
@@ -68,7 +82,7 @@ apiRouter.post("/tracker/update", async (req, res) => {
 apiRouter.post("/tracker/delete", async (req, res) => {
     const { body } = req;
 
-    const response = await tracker.delete(body.id);
+    const response = await tracker.delete(body.taskId, body.trackId);
 
     res.json(response);
 });
