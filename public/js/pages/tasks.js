@@ -44,15 +44,18 @@ function renderTask(task) {
             });
         };
 
-        valueEl.addEventListener("keydown", () => {
+        const recalculateHeight = () => {
             // valueEl.style.height = `${calcHeight(valueEl.value)}px`;
             valueEl.style.height = "auto";
 
-            const height = valueEl.scrollHeight ? valueEl.scrollHeight + 10 : Math.floor(valueEl.value.length / 4);
-            console.log(valueEl.scrollHeight);
+            // const height = valueEl.scrollHeight ? valueEl.scrollHeight + 10 : Math.floor(valueEl.value.length / 4);
 
-            valueEl.style.height = `${height > 10 ? height : 30}px`;
-        });
+            const height = valueEl.scrollHeight  +10;
+            valueEl.style.height = `${height > 10 ? height : 16}px`;
+        };
+
+        valueEl.addEventListener("keydown", recalculateHeight);
+        valueEl.addEventListener("click", recalculateHeight);
 
         return btn;
     };
@@ -172,7 +175,6 @@ function renderTask(task) {
 
         if (type.button) {
             columnDom.append(type.button(task.id, valDom));
-            valDom.dispatchEvent(new Event("keydown"));
         }
 
         if (inner) {
@@ -191,7 +193,7 @@ function renderTask(task) {
     for (const column of table) {
         const val = task[column.name];
 
-        if (val) {
+        if (val || val === "") {
             if (column.name === "id") {
                 const columnDom = createColumn(column, val, true);
                 columnDom.className = "task-id-column";
@@ -284,5 +286,9 @@ async function start() {
         const taskDom = renderTask(task);
 
         tasksGroups[task.status].appendChild(taskDom);
+
+        qq(".value-max").forEach((el) => {
+            el.dispatchEvent(new Event("keydown"));
+        });
     }
 }

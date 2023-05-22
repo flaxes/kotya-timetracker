@@ -142,13 +142,14 @@ menu a:hover {
 
 .task-name {
     width: 200px;
+    resize: none;
 }
 
 .value-max {
     width: 100%;
     resize: none;
-    box-sizing: border-box;
-    max-height: 200px;
+    font-size: large;
+    /* max-height: 200px; */
 }
 
 .error {
