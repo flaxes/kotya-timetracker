@@ -1,11 +1,5 @@
 // @ts-check
 
-const db = require("./src/db");
-const tracker = require("./src/tracker");
+const updater = require("./src/updater");
 
-async function test() {
-    await db.init();
-    await tracker.stopNotFinished().then(console.log);
-}
-
-test().catch((err) => console.error(err));
+console.log(updater.getVersion());

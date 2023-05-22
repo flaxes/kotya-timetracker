@@ -12,6 +12,10 @@ app.use(express.static("./public"));
 
 const apiRouter = express.Router();
 
+apiRouter.get('/version', (req, res) => {
+    
+})
+
 apiRouter.get("/lang", (req, res) => {
     res.json(L.list());
 });
