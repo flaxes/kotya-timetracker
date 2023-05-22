@@ -9,7 +9,9 @@ const tracker = require("./src/tracker");
 const watcher = require("./src/watcher");
 const cron = require("cron");
 
-watcher(io);
+if (["true", "1"].includes(process.env.DEBUG || "")) {
+    watcher(io);
+}
 
 const logger = createLogger("App");
 

@@ -117,4 +117,11 @@ function refreshWithNewSearch(key, value) {
     window.location.href = url;
 }
 
+function calcHeight(value) {
+    let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+    // min-height + lines x line-height + padding + border
+    let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
+    return newHeight;
+}
+
 const getTimeFromDate = (date) => date.slice(11, 16);

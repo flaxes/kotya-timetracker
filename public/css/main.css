@@ -147,6 +147,8 @@ menu a:hover {
 .value-max {
     width: 100%;
     resize: none;
+    box-sizing: border-box;
+    max-height: 200px;
 }
 
 .error {

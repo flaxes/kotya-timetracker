@@ -31,17 +31,28 @@ async function updateTaskStatus(id, status) {
 function renderTask(task) {
     const updateNameButton = (id, valueEl) => {
         const btn = createElementWithText("button", "s", "value-save");
+
         btn.onclick = () => {
             const isConfirmed = confirm(L("are_you_sure", "C", 1));
 
             if (!isConfirmed) return;
 
-            request("/tasks/update", "POST", { id, name: valueEl.value }).catch(err => {
+            request("/tasks/update", "POST", { id, name: valueEl.value }).catch((err) => {
                 console.error(err);
 
                 alert(err.message);
-            })
+            });
         };
+
+        valueEl.addEventListener("keydown", () => {
+            // valueEl.style.height = `${calcHeight(valueEl.value)}px`;
+            valueEl.style.height = "auto";
+
+            const height = valueEl.scrollHeight ? valueEl.scrollHeight + 10 : Math.floor(valueEl.value.length / 4);
+            console.log(valueEl.scrollHeight);
+
+            valueEl.style.height = `${height > 10 ? height : 30}px`;
+        });
 
         return btn;
     };
@@ -161,7 +172,9 @@ function renderTask(task) {
 
         if (type.button) {
             columnDom.append(type.button(task.id, valDom));
+            valDom.dispatchEvent(new Event("keydown"));
         }
+
         if (inner) {
             const upperGroup = document.createElement("div");
             upperGroup.append(group);
