@@ -6,6 +6,7 @@ const io = require("./src/io");
 const createLogger = require("./src/logger");
 const server = require("./src/server");
 const tracker = require("./src/tracker");
+const updater = require("./src/updater");
 const watcher = require("./src/watcher");
 const cron = require("cron");
 
@@ -16,6 +17,14 @@ if (["true", "1"].includes(process.env.DEBUG || "")) {
 const logger = createLogger("App");
 
 async function bootstrap() {
+    const hasUpdate = await updater.checkAvailable();
+
+    if (hasUpdate) {
+        const { available, version } = updater.getVersion();
+
+        logger.warn(`Current version: ${version}. Available: ${available}`);
+    }
+
     await db.init();
 
     await tracker.stopNotFinished();

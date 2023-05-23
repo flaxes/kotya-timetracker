@@ -106,7 +106,7 @@ function renderNum(num, taskCounter, counter) {
 
             if (toInput.value) body.to = `${date} ${toInput.value}:00`;
 
-            await request("/tracker/update", "POST", body)
+            await request("tracker/update", "POST", body)
                 .then((res) => {
                     numTotal.change(num.id, res.diff);
                 })
@@ -127,7 +127,7 @@ function renderNum(num, taskCounter, counter) {
 
         if (toInput.value) body.to = `${date} ${toInput.value}:00`;
 
-        await request("/tracker/create", "POST", body)
+        await request("tracker/create", "POST", body)
             .then((res) => {
                 num.id = res.id;
                 numTotal.change(num.id, res.wasted_mins);
@@ -145,7 +145,7 @@ function renderNum(num, taskCounter, counter) {
         if (!isConfirmed) return;
 
         if (num.id) {
-            await request("/tracker/delete", "POST", { trackId: num.id, taskId: num.task_id })
+            await request("tracker/delete", "POST", { trackId: num.id, taskId: num.task_id })
                 .then(() => {})
                 .catch((err) => {
                     console.error(err);
@@ -282,7 +282,7 @@ function renderDay(date, tracks) {
 
 async function renderTracker(currentWeek) {
     /** @type {import("../../../types/db").TaskTrackRow[]} */
-    const res = await request("/tracker", "GET", { week: currentWeek });
+    const res = await request("tracker", "GET", { week: currentWeek });
     const trackerDom = q("#week-tracker");
 
     let day = "";

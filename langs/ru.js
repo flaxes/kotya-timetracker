@@ -72,4 +72,7 @@ module.exports = {
     wasted_per_start_dt: ":",
     wasted_per_task_dt: "затрачено за таск:",
     wasted_per_day_dt: "затрачено за день:",
+
+    update: 'обновление',
+    update_action: 'обновить'
 };

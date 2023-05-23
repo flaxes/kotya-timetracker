@@ -1,5 +1,8 @@
 @echo off
 
+echo Updater. Press any key to continue...
+pause
+
 echo WinRAR required to be installed.
 
 curl -L -o update.zip https://github.com/flaxes/kotya-timetracker/archive/refs/heads/master.zip

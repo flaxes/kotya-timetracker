@@ -19,7 +19,7 @@ const tasksGroups = {
 };
 
 async function updateTaskStatus(id, status) {
-    const res = await request("/tasks/status", "POST", { id, status });
+    const res = await request("tasks/status", "POST", { id, status });
 
     return res;
 }
@@ -37,7 +37,7 @@ function renderTask(task) {
 
             if (!isConfirmed) return;
 
-            request("/tasks/update", "POST", { id, name: valueEl.value }).catch((err) => {
+            request("tasks/update", "POST", { id, name: valueEl.value }).catch((err) => {
                 console.error(err);
 
                 alert(err.message);
@@ -139,7 +139,7 @@ function renderTask(task) {
 
             if (!isConfirm) return;
 
-            request("/tasks/delete", "POST", { id })
+            request("tasks/delete", "POST", { id })
                 .then(() => {
                     // @ts-ignore
                     btn.parentElement.parentElement.remove();
@@ -231,7 +231,7 @@ function initNewButton() {
         }
 
         const body = { name, external_id };
-        const res = await request("/tasks/create", "POST", body).catch((err) => {
+        const res = await request("tasks/create", "POST", body).catch((err) => {
             console.error(err);
 
             error.innerText = err.message;
@@ -281,7 +281,7 @@ async function start() {
     initNewButton();
     const search = initSearchFields();
 
-    const tasks = await request("/tasks", "GET", { search });
+    const tasks = await request("tasks", "GET", { search });
     for (const task of tasks) {
         const taskDom = renderTask(task);
 

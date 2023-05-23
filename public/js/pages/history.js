@@ -1,5 +1,5 @@
 async function start() {
-    const history = await request("/history");
+    const history = await request("history");
 
     const dom = document.querySelector("#history");
 

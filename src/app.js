@@ -5,6 +5,7 @@ const history = require("./history");
 const L = require("./lang");
 const tasks = require("./tasks");
 const tracker = require("./tracker");
+const updater = require("./updater");
 
 const app = express();
 
@@ -12,9 +13,16 @@ app.use(express.static("./public"));
 
 const apiRouter = express.Router();
 
-apiRouter.get('/version', (req, res) => {
-    
-})
+apiRouter.get("/version", (_req, res) => {
+    res.json(updater.getVersion());
+});
+
+apiRouter.get("/update", (_req, res) => {
+    // Will shutdown entire application!
+    res.json({ message: "ok", success: true });
+
+    updater.update();
+});
 
 apiRouter.get("/lang", (req, res) => {
     res.json(L.list());
