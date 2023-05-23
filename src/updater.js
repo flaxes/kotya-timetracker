@@ -32,7 +32,7 @@ class Updater {
     }
 
     update() {
-        spawn("cmd.exe", ["/c", "UPDATE.bat"], { windowsHide: false, cwd: "./", stdio: "overlapped", detached: true });
+        spawn("cmd.exe", ["/c", "UPDATE.bat"], { windowsHide: false, cwd: "./", stdio: "inherit", detached: true });
     }
 }
 

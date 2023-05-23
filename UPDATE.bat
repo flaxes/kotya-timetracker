@@ -12,3 +12,5 @@ call node ./cli/update.js
 INSTALL.bat
 
 echo Latest update installed.
+
+call RUN.bat
