@@ -9,7 +9,8 @@ async function init() {
 
     const versions = await request("version");
 
-    if (versions.version !== versions.available) {
+    if (1 || versions.version !== versions.available) {
+        console.log(versions.version, versions.available, versions.version === versions.available)
         const updateBtn = q(".update-action");
 
         updateBtn.hidden = false;

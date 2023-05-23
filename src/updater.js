@@ -12,7 +12,7 @@ class Updater {
     #version;
     #available;
     constructor() {
-        this.#version = fs.readFileSync("./version").toString().split("\n")[0];
+        this.#version = fs.readFileSync("./version").toString().replace(/\r/g, '').split("\n")[0];
     }
 
     getVersion() {
@@ -32,7 +32,7 @@ class Updater {
     }
 
     update() {
-        spawn("cmd.exe", ["/c", "UPDATE.bat"], { windowsHide: false, cwd: "./", stdio: "inherit", detached: true });
+        spawn("cmd.exe", ["/c", "UPDATE.bat"], { windowsHide: false, cwd: "./", stdio: "pipe", detached: true });
     }
 }
 
