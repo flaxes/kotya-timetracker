@@ -3,10 +3,16 @@
 if (!moment) var moment = require("moment");
 
 function getStatusEnum() {
-    const TASK_STATUS = {
+    /* const TASK_STATUS = {
         0: L("pause", "C"),
         1: L("begin", "C"),
         2: L("end", "C"),
+    }; */
+
+    const TASK_STATUS = {
+        0: L("inpause", "C"),
+        1: L("inwork", "C"),
+        2: L("complete", "C"),
     };
 
     return TASK_STATUS;
@@ -50,8 +56,8 @@ function renderTask(task) {
 
             // const height = valueEl.scrollHeight ? valueEl.scrollHeight + 10 : Math.floor(valueEl.value.length / 4);
 
-            const height = valueEl.scrollHeight  +10;
-            valueEl.style.height = `${height > 10 ? height : 16}px`;
+            const height = valueEl.scrollHeight;
+            valueEl.style.height = `${height > 10 ? height : 10}px`;
         };
 
         valueEl.addEventListener("keydown", recalculateHeight);
