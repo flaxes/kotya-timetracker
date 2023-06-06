@@ -33,7 +33,10 @@ apiRouter.get("/history", async (req, res) => {
 });
 
 apiRouter.get("/tasks", async (req, res) => {
-    res.json(await tasks.get(req.query.search, req.query.status));
+    const { search, status } = req.query;
+    const statuses = status && typeof status === "string" ? status.split(",") : [];
+
+    res.json(await tasks.get(search, statuses));
 });
 
 apiRouter.get("/tracker", async (req, res) => {

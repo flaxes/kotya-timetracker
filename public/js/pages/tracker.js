@@ -362,7 +362,7 @@ class Tracker {
     async render(currentWeek) {
         /** @type {import("../../../types/db").TaskTrackRow[]} */
         const res = await request("tracker", "GET", { week: currentWeek });
-        const tasksInPause = await request("tasks", "GET", { status: 0 });
+        const tasksInPause = await request("tasks", "GET", { status: [0, 1] });
         this.visibleTasks = tasksInPause;
         this.visibleTasksList = {};
         this.visibleTasks.forEach((item) => {

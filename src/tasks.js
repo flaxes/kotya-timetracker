@@ -17,7 +17,7 @@ class Tasks {
      *
      * @returns {Promise<import("../types/db").TaskRow[]>}
      */
-    async get(search, status) {
+    async get(search, statuses) {
         let sql = "SELECT t.*, SUM(tt.wasted_mins) wasted_total_mins FROM tasks t";
 
         sql += "\nLEFT JOIN task_trackers tt ON tt.task_id = t.id";
@@ -33,9 +33,8 @@ class Tasks {
             args.push(search, search);
         }
 
-        if (status) {
-            sql += "\nAND status = ?"
-            args.push(~~status);
+        if (statuses && statuses.length) {
+            sql += `\nAND status IN (${statuses.join(",")})`;
         }
 
         sql += "\nGROUP BY t.id";
