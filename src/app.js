@@ -33,7 +33,7 @@ apiRouter.get("/history", async (req, res) => {
 });
 
 apiRouter.get("/tasks", async (req, res) => {
-    res.json(await tasks.get(req.query.search));
+    res.json(await tasks.get(req.query.search, req.query.status));
 });
 
 apiRouter.get("/tracker", async (req, res) => {

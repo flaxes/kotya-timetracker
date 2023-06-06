@@ -1,6 +1,7 @@
 const BACKEND_PREFIX = "/api";
 const SEARCH = new URL(document.location).searchParams;
 const DATE_FORMAT = "DD-MM-yyyy";
+const DATE_ISO_FORMAT = 'yyyy-MM-DD';
 const TIME_FORMAT = "HH:mm";
 const DATE_TIME_FORMAT = "DD-MM-yyyy HH:mm:ss";
 
@@ -35,7 +36,7 @@ async function request(path, method, data) {
 function createElementWithText(el, text, className) {
     const elem = document.createElement(el);
 
-    elem.innerText = text;
+    if (text) elem.innerText = text;
     if (className) elem.className = className;
 
     return elem;

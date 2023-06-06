@@ -78,6 +78,14 @@ menu a:hover {
     display: flex;
 }
 
+.task-add-select {
+    max-width: 11vw;
+}
+
+.task-add-select > option {
+    max-width: 40px;
+}
+
 .summary-num {
     white-space: nowrap;
 }
@@ -142,8 +150,9 @@ menu a:hover {
 }
 
 .task-name {
-    width: 200px;
+    width: auto;
     resize: none;
+    overflow-wrap: anywhere;
 }
 
 .value-max {
@@ -151,7 +160,8 @@ menu a:hover {
     resize: none;
     font-size: large;
     border: none;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif;
+    height: auto;
     /* max-height: 200px; */
 }
 
