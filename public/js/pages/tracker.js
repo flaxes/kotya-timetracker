@@ -61,6 +61,12 @@ class TotalCounter {
 
         this.update();
     }
+
+    getDate() {
+        const dom = getParent(this.el, 4);
+
+        if (dom) return dom.dataset.date;
+    }
 }
 
 class Tracker {
@@ -68,6 +74,7 @@ class Tracker {
         this.visibleTasks = [];
         this.visibleTasksList = {};
     }
+
     /**
      *
      * @param {Partial<import("../../../types/db").TaskTrackRow>} num
@@ -98,8 +105,6 @@ class Tracker {
             if (moment(fromInput.value, TIME_FORMAT).isAfter(moment(toInput.value, TIME_FORMAT))) {
                 return;
             }
-
-            console.log(num);
 
             const date = (num.started_at || new Date().toISOString()).slice(0, 10);
 
@@ -209,12 +214,10 @@ class Tracker {
     renderAddNumBtn(taskId, taskCounter, taskStartsDom) {
         const btn = createElementWithText("button", "+", "task-time-starts-add");
 
-        console.log(taskStartsDom);
-
         btn.onclick = () => {
             const count = (Number(taskStartsDom.dataset.counter) || 0) + 1;
             // @ts-ignore
-            const started_at = taskStartsDom.parentElement.parentElement.dataset.date || new Date().toISOString();
+            const started_at = taskCounter.getDate() || new Date().toISOString();
 
             taskStartsDom.dataset.counter = count + "";
             const createNum = this.renderNum({ task_id: taskId, started_at }, taskCounter, count);
@@ -225,6 +228,12 @@ class Tracker {
         return btn;
     }
 
+    /**
+     *
+     * @param {HTMLElement} weekDayDom
+     * @param {TotalCounter} total
+     * @returns
+     */
     renderAddDayTaskBtn(weekDayDom, total) {
         const addTaskDom = createElementWithText("div", "", "task-add");
 
@@ -244,7 +253,7 @@ class Tracker {
                 addTaskDom.hidden = true;
             }
 
-            weekDayDom.append(newTaskDom);
+            weekDayDom.prepend(newTaskDom);
         };
 
         addTaskDom.append(select);
@@ -309,15 +318,16 @@ class Tracker {
 
         const { dom, total } = this.renderSummary("wasted_per_day_dt");
         const weekDayDom = createElementWithText("div", "", "week-day");
+        const weekDayTasks = createElementWithText("div", "", "weeek-day-tasks");
         const weekDayInfo = createElementWithText("div", "", "week-day-title");
 
-        const addDayTaskDom = this.renderAddDayTaskBtn(weekDayDom, total);
+        const addDayTaskDom = this.renderAddDayTaskBtn(weekDayTasks, total);
         const addDayTaskList = {};
 
         weekDayDom.append(weekDayInfo);
         weekDayInfo.append(createElementWithText("span", weekdayName, "week-day-name"));
         weekDayInfo.append(createElementWithText("span", date, "week-day-date"));
-        weekDayDom.append(addDayTaskDom);
+        weekDayDom.append(addDayTaskDom, weekDayTasks);
 
         for (const [id, nums] of Object.entries(tracks)) {
             if (!nums[0]) {
@@ -333,7 +343,7 @@ class Tracker {
 
             addDayTaskList[id] = true;
 
-            weekDayDom.append(taskDom);
+            weekDayTasks.append(taskDom);
         }
 
         if (this.visibleTasks) {

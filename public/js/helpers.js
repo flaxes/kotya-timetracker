@@ -1,7 +1,7 @@
 const BACKEND_PREFIX = "/api";
 const SEARCH = new URL(document.location).searchParams;
 const DATE_FORMAT = "DD-MM-yyyy";
-const DATE_ISO_FORMAT = 'yyyy-MM-DD';
+const DATE_ISO_FORMAT = "yyyy-MM-DD";
 const TIME_FORMAT = "HH:mm";
 const DATE_TIME_FORMAT = "DD-MM-yyyy HH:mm:ss";
 
@@ -123,6 +123,18 @@ function calcHeight(value) {
     // min-height + lines x line-height + padding + border
     let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2;
     return newHeight;
+}
+
+function getParent(el, count) {
+    let target = el;
+
+    while (count--) {
+        if (!target.parentElement) break;
+
+        target = target.parentElement;
+    }
+
+    return target;
 }
 
 const getTimeFromDate = (date) => date.slice(11, 16);

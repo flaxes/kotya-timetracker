@@ -172,7 +172,6 @@ function renderTask(task) {
         if (type.format) val = type.format(val);
 
         const valDom = document.createElement(type.type || "span");
-        console.log(valDom);
         valDom.className = type.valueClass || "value";
 
         valDom[type.value || "innerText"] = val;
